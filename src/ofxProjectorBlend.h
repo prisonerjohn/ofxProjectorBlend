@@ -89,6 +89,8 @@ protected:
 	float singleChannelWidth;
 	float singleChannelHeight;
 
+	ofVboMesh quadMesh;
+
 	float displayWidth;
 	float displayHeight;
 
