@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ofxProjectorBlend.cpp">
+      <Filter>addons\ofxProjectorBlend\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{d02763bc-39e0-4627-99de-c842093ec5f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxProjectorBlend">
+      <UniqueIdentifier>{270aece8-a51c-4424-b686-8c794be8f7e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxProjectorBlend\src">
+      <UniqueIdentifier>{078d75d4-eb13-41ec-9889-7961ad92314c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxProjectorBlend.h">
+      <Filter>addons\ofxProjectorBlend\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ofxProjectorBlendShader.h">
+      <Filter>addons\ofxProjectorBlend\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>

@@ -1,21 +1,22 @@
 build/
 obj/
-bin/
+bin/*
+!bin/data/
 *.o
 *.app/
 *.DS_Store
 /Dev
 *.svn
 
-#XCode 
-*.xcscheme
-*.xcsettings
-*.xcworkspacedata
-*.xcworkspace
-*.xcuserdatad
-*.mode1v3
+#XCode
 *.pbxuser
-
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+# XCode 4
+xcuserdata
+*.xcworkspace
 
 #Code::Blocks
 *.depend
@@ -24,7 +25,9 @@ bin/
 #Visual Studio
 *.sdf
 *.opensdf
+*.opendb
 *.suo
+*.exp
 ipch/
 
 
