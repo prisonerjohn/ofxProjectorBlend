@@ -1,6 +1,6 @@
 #include "ofxProjectorBlend.h"
-#include "ofxProjectorBlendShader.h"
 
+#define STRINGIFY(A) #A
 
 // --------------------------------------------------
 ofxProjectorBlend::ofxProjectorBlend()
@@ -88,10 +88,23 @@ void ofxProjectorBlend::setup(int resolutionWidth,
 	displayHeight = resolutionHeight;
 
 	fullTexture.allocate(fullTextureWidth, fullTextureHeight, GL_RGB, 4);
+		
+	string vertexShaderFixed =
+#include "shaders/gl/vert.glsl"
+	string fragmentShaderFixed =
+#include "shaders/gl/frag_rectangle.glsl"
+
+	string vertexShaderProgrammable =
+#include "shaders/gl3/vert.glsl"
+	string fragmentShaderProgrammable =
+#include "shaders/gl3/frag.glsl"
+
+	string vertexShader = ofIsGLProgrammableRenderer() ? vertexShaderProgrammable : vertexShaderFixed;
+	string fragmentShader = ofIsGLProgrammableRenderer() ? fragmentShaderProgrammable : fragmentShaderFixed;
 
 	blendShader.unload();
-	blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, ofxProjectorBlendFragShader(numProjectors-1));
-	blendShader.setupShaderFromSource(GL_VERTEX_SHADER, ofxProjectorBlendVertShader);
+	blendShader.setupShaderFromSource(GL_VERTEX_SHADER, vertexShader);
+	blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentShader);
 	blendShader.linkProgram();
 
 	gamma.resize(numProjectors-1, 0.5);
@@ -169,17 +182,17 @@ void ofxProjectorBlend::end()
 void ofxProjectorBlend::updateShaderUniforms()
 {
 
-	blendShader.setUniform1f("OverlapTop", 0.0f);
-	blendShader.setUniform1f("OverlapLeft", 0.0f);
-	blendShader.setUniform1f("OverlapBottom", 0.0f);
-	blendShader.setUniform1f("OverlapRight", 0.0f);
+	blendShader.setUniform4f("uOverlap.top", 0.0f);
+	blendShader.setUniform1f("uOverlap.left", 0.0f);
+	blendShader.setUniform1f("uOverlap.bottom", 0.0f);
+	blendShader.setUniform1f("uOverlap.right", 0.0f);
 
-	blendShader.setUniform1fv("BlendPower", &blendPower[0], blendPower.size());
-	blendShader.setUniform1fv("SomeLuminanceControl", &luminance[0], luminance.size());
-	blendShader.setUniform1fv("GammaCorrection", &gamma[0], gamma.size());
+	blendShader.setUniform1fv("uBlendPower", &blendPower[0], blendPower.size());
+	blendShader.setUniform1fv("uLuminanceControl", &luminance[0], luminance.size());
+	blendShader.setUniform1fv("uGammaCorrection", &gamma[0], gamma.size());
 
-	blendShader.setUniform1f("projectors", this->numProjectors);
-	blendShader.setUniform1f("threshold", threshold);
+	//blendShader.setUniform1f("projectors", this->numProjectors);
+	//blendShader.setUniform1f("threshold", threshold);
 }
 
 
@@ -190,19 +203,18 @@ void ofxProjectorBlend::draw(float x, float y) {
 	ofTranslate(x, y, 0);
 	if(showBlend) {
 		blendShader.begin();
-		blendShader.setUniform1f("width", singleChannelWidth);
-		blendShader.setUniform1f("height", singleChannelHeight);
+		blendShader.setUniform2f("uDimensions", singleChannelWidth, singleChannelHeight);
 
 		updateShaderUniforms();
 
 		if(layout == ofxProjectorBlend_Horizontal) {
-			blendShader.setUniform1f("OverlapRight", pixelOverlap);
+			blendShader.setUniform1f("uOverlap.right", pixelOverlap);
 		}
 		else {
-			blendShader.setUniform1f("OverlapTop", pixelOverlap);
+			blendShader.setUniform1f("uOverlap.top", pixelOverlap);
 		}
 
-		blendShader.setUniformTexture("Tex0", fullTexture.getTexture(), 0);
+		blendShader.setUniformTexture("uImage", fullTexture, 0);
 
 
 		ofVec2f offset(0,0);
@@ -210,15 +222,15 @@ void ofxProjectorBlend::draw(float x, float y) {
 
 		// loop through each projector and translate to its position and draw.
 		for(int i = 0; i < numProjectors; i++) {
-			blendShader.setUniform2f("texCoordOffset", offset.x, offset.y);
+			blendShader.setUniform2f("uOffset", offset.x, offset.y);
 
 			if(i==1) {
 				// set the first edge
 				if(layout == ofxProjectorBlend_Horizontal) {
-					blendShader.setUniform1f("OverlapLeft", pixelOverlap);
+					blendShader.setUniform1f("uOverlap.left", pixelOverlap);
 				}
 				else {
-					blendShader.setUniform1f("OverlapBottom", pixelOverlap);
+					blendShader.setUniform1f("uOverlap.bottom", pixelOverlap);
 				}
 
 			}
@@ -226,10 +238,10 @@ void ofxProjectorBlend::draw(float x, float y) {
 
 			if(i+1 == numProjectors) {
 				if(layout == ofxProjectorBlend_Horizontal) {
-					blendShader.setUniform1f("OverlapRight", 0);
+					blendShader.setUniform1f("uOverlap.right", 0);
 				}
 				else {
-					blendShader.setUniform1f("OverlapTop", 0);
+					blendShader.setUniform1f("uOverlap.top", 0);
 				}
 			}
 
