@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	// ofxProjectorBlend also works with normalized texture coords (GL_TEXTURE_2D)!
+	//ofDisableArbTex();
+
 	blender.setup(PROJECTOR_WIDTH, PROJECTOR_HEIGHT, PROJECTOR_COUNT, PIXEL_OVERLAP);
 	blender.gamma[0] = .5;
 	blender.blendPower[0] = 1;

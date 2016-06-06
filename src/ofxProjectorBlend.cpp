@@ -79,12 +79,22 @@ void ofxProjectorBlend::setup(int resolutionWidth,
 	quadMesh.addVertex(ofVec2f(0, singleChannelHeight));
 	quadMesh.addVertex(ofVec2f(singleChannelWidth, singleChannelHeight));
 
-	quadMesh.addTexCoord(ofVec2f(0, 0));
-	quadMesh.addTexCoord(ofVec2f(singleChannelWidth, 0));
-	quadMesh.addTexCoord(ofVec2f(0, singleChannelHeight));
-	quadMesh.addTexCoord(ofVec2f(singleChannelWidth, singleChannelHeight));
+	if (ofGetUsingArbTex()) {
+		quadMesh.addTexCoord(ofVec2f(0, 0));
+		quadMesh.addTexCoord(ofVec2f(singleChannelWidth, 0));
+		quadMesh.addTexCoord(ofVec2f(0, singleChannelHeight));
+		quadMesh.addTexCoord(ofVec2f(singleChannelWidth, singleChannelHeight));
+	}
+	else {
+		float u = singleChannelWidth / fullTextureWidth;
+		float v = singleChannelHeight / fullTextureHeight;
+		quadMesh.addTexCoord(ofVec2f(0, 0));
+		quadMesh.addTexCoord(ofVec2f(u, 0));
+		quadMesh.addTexCoord(ofVec2f(0, v));
+		quadMesh.addTexCoord(ofVec2f(u, v));
+	}
 
-	displayWidth = resolutionWidth*numProjectors;
+	displayWidth = resolutionWidth * numProjectors;
 	displayHeight = resolutionHeight;
 
 	fullTexture.allocate(fullTextureWidth, fullTextureHeight, GL_RGB, 4);
@@ -92,6 +102,8 @@ void ofxProjectorBlend::setup(int resolutionWidth,
 	string vertexShaderFixed =
 #include "shaders/gl/vert.glsl"
 	string fragmentShaderFixed =
+#include "shaders/gl/frag.glsl"
+	string fragmentShaderFixedRect =
 #include "shaders/gl/frag_rectangle.glsl"
 
 	string vertexShaderProgrammable =
@@ -100,7 +112,7 @@ void ofxProjectorBlend::setup(int resolutionWidth,
 #include "shaders/gl3/frag.glsl"
 
 	string vertexShader = ofIsGLProgrammableRenderer() ? vertexShaderProgrammable : vertexShaderFixed;
-	string fragmentShader = ofIsGLProgrammableRenderer() ? fragmentShaderProgrammable : fragmentShaderFixed;
+	string fragmentShader = ofIsGLProgrammableRenderer() ? fragmentShaderProgrammable : ofGetUsingArbTex() ? fragmentShaderFixedRect : fragmentShaderFixed;
 
 	blendShader.unload();
 	blendShader.setupShaderFromSource(GL_VERTEX_SHADER, vertexShader);
@@ -181,7 +193,6 @@ void ofxProjectorBlend::end()
 // --------------------------------------------------
 void ofxProjectorBlend::updateShaderUniforms()
 {
-
 	blendShader.setUniform4f("uOverlap.top", 0.0f);
 	blendShader.setUniform1f("uOverlap.left", 0.0f);
 	blendShader.setUniform1f("uOverlap.bottom", 0.0f);
@@ -204,6 +215,7 @@ void ofxProjectorBlend::draw(float x, float y) {
 	if(showBlend) {
 		blendShader.begin();
 		blendShader.setUniform2f("uDimensions", singleChannelWidth, singleChannelHeight);
+		blendShader.setUniform2f("uCanvas", getCanvasWidth(), getCanvasHeight());
 
 		updateShaderUniforms();
 

@@ -4,8 +4,8 @@ STRINGIFY(
 
 \n#define MAX_BLENDS 8\n
 
-\n#define SAMPLER_TYPE sampler2DRect\n
-\n#define TEXTURE_FUNCTION texture2DRect\n
+\n#define SAMPLER_TYPE sampler2D\n
+\n#define TEXTURE_FUNCTION texture2D\n
 
 struct Edges
 {
@@ -21,6 +21,7 @@ uniform float uGammaCorrection[MAX_BLENDS];
 
 uniform SAMPLER_TYPE uImage;
 uniform vec2 uDimensions;
+uniform vec2 uCanvas;
 uniform vec2 uOffset;
 
 uniform Edges uOverlap;
@@ -275,15 +276,16 @@ vec4 drawSolidEdges(in vec2 location, in vec2 texCoord)
 //--------------------------------------------------------------
 void main()
 {
-	vec2 texCoord = gl_TexCoord[0].xy + uOffset;
+	vec2 location = gl_TexCoord[0].xy * uCanvas;
+	vec2 texCoord = gl_TexCoord[0].xy + uOffset / uCanvas;
 
 	if (uSolidEdgeEnabled == 1.0)
 	{
-		gl_FragData[0] = drawSolidEdges(gl_TexCoord[0].xy, texCoord);
+		gl_FragColor = drawSolidEdges(location, texCoord);
 	}
 	else
 	{
-		gl_FragData[0] = drawSmoothEdges(gl_TexCoord[0].xy, texCoord);
+		gl_FragColor = drawSmoothEdges(location, texCoord);
 	}
 }
 );
