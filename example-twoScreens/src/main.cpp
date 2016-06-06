@@ -1,16 +1,14 @@
 #include "ofMain.h"
 #include "ofApp.h"
-#include "ofAppGlutWindow.h"
 
 //========================================================================
-int main( ){
+int main() {
+	ofGLFWWindowSettings settings;
+	// ofxProjectorBlend also works with programmable pipeline (Version 3.2+)!
+	settings.setGLVersion(3, 2);
+	settings.width = 1280;
+	settings.height = 480;
+	ofCreateWindow(settings);
 
-	ofAppGlutWindow window;
-	ofSetupOpenGL(&window, 1280, 480, OF_WINDOW);			// <-------- setup the GL context
-
-	// this kicks off the running of my app
-	// can be OF_WINDOW or OF_FULLSCREEN
-	// pass in width and height too:
-	ofRunApp( new ofApp());
-
+	ofRunApp(new ofApp());
 }
