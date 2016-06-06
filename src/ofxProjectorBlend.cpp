@@ -1,6 +1,8 @@
 #include "ofxProjectorBlend.h"
 
-#define STRINGIFY(A) #A
+//#define STRINGIFY(A) #A
+
+#include "ofxProjectorBlendShader.h"
 
 // --------------------------------------------------
 ofxProjectorBlend::ofxProjectorBlend()
@@ -98,30 +100,18 @@ void ofxProjectorBlend::setup(int resolutionWidth,
 	displayHeight = resolutionHeight;
 
 	fullTexture.allocate(fullTextureWidth, fullTextureHeight, GL_RGB, 4);
-		
-	string vertexShaderFixed =
-#include "shaders/gl/vert.glsl"
-	string fragmentShaderFixed =
-#include "shaders/gl/frag.glsl"
-	string fragmentShaderFixedRect =
-#include "shaders/gl/frag_rectangle.glsl"
-
-	string vertexShaderProgrammable =
-#include "shaders/gl3/vert.glsl"
-	string fragmentShaderProgrammable =
-#include "shaders/gl3/frag.glsl"
-
-	string vertexShader = ofIsGLProgrammableRenderer() ? vertexShaderProgrammable : vertexShaderFixed;
-	string fragmentShader = ofIsGLProgrammableRenderer() ? fragmentShaderProgrammable : ofGetUsingArbTex() ? fragmentShaderFixedRect : fragmentShaderFixed;
 
 	blendShader.unload();
-	blendShader.setupShaderFromSource(GL_VERTEX_SHADER, vertexShader);
-	blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentShader);
+	blendShader.setupShaderFromSource(GL_VERTEX_SHADER, ofxProjectorBlendShader::GetVertexShader());
+	blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, ofxProjectorBlendShader::GetFragmentShader());
+	if (ofIsGLProgrammableRenderer()) {
+		blendShader.bindDefaults();
+	}
 	blendShader.linkProgram();
 
-	gamma.resize(numProjectors-1, 0.5);
-	blendPower.resize(numProjectors-1, 1);
-	luminance.resize(numProjectors-1, 0);
+	gamma.resize(numProjectors - 1, 0.5);
+	blendPower.resize(numProjectors - 1, 1);
+	luminance.resize(numProjectors - 1, 0);
 }
 
 

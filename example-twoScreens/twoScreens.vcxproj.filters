@@ -24,12 +24,6 @@
     <Filter Include="addons\ofxProjectorBlend\src">
       <UniqueIdentifier>{078d75d4-eb13-41ec-9889-7961ad92314c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxProjectorBlend\src\shaders">
-      <UniqueIdentifier>{d8f1bdb7-6b44-4fd2-8e24-7f0fc496b93e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="addons\ofxProjectorBlend\src\shaders\gl">
-      <UniqueIdentifier>{45ee9e5b-e78c-4b9d-b12c-d58232174223}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
@@ -38,19 +32,11 @@
     <ClInclude Include="..\src\ofxProjectorBlend.h">
       <Filter>addons\ofxProjectorBlend\src</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\ofxProjectorBlendShader.h">
+      <Filter>addons\ofxProjectorBlend\src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\shaders\gl\frag_rectangle.glsl">
-      <Filter>addons\ofxProjectorBlend\src\shaders\gl</Filter>
-    </None>
-    <None Include="..\src\shaders\gl\vert.glsl">
-      <Filter>addons\ofxProjectorBlend\src\shaders\gl</Filter>
-    </None>
-    <None Include="..\src\shaders\gl\frag.glsl">
-      <Filter>addons\ofxProjectorBlend\src\shaders\gl</Filter>
-    </None>
   </ItemGroup>
 </Project>
